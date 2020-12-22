@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Homepage{% endblock %}
+
+
+{% block content %}
+    <figure class="text-center">
+        <h1 class="display-1">איזורים</h1>
+        <p class="lead">
+{#            עוד קופירייט מרטיב מנושים#}
+        </p>
+    </figure>
+    <div class="container-xxl">
+        <canvas id="myPieChart" width="400"></canvas>
+    </div>
+{% endblock %}
+
+{% block javaScript %}
+    <script>
+    var ctx2 = document.getElementById('myPieChart').getContext('2d');
+    var myPieChart = new Chart(ctx2, {
+    type: 'pie',
+    data: {
+        datasets: [{
+            data: {{ data|safe }},
+            backgroundColor: [
+                'rgb(90,222,222)',
+                'rgb(193, 253, 111)',
+                'rgb(172, 127, 203)',
+                'rgb(203, 53, 175)',
+                'rgb(22,58,139)',
+                'rgb(102, 181, 19)',
+                'rgb(92, 165, 221)',
+                'rgb(255,239,1)',
+                'rgb(255,99,0)',
+                'rgb(255,0,0)'
+            ],
+            label: 'Dataset 1'
+        }],
+        labels: {{ labels|safe }}
+    },
+    options: {}
+    });
+    </script>
+{% endblock %}

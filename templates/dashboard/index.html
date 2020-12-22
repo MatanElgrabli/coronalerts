@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Homepage{% endblock %}
+
+
+{% block content %}
+    <figure class="text-center">
+        <h1 class="display-1">חולים חדשים</h1>
+        <p class="lead">
+
+        </p>
+    </figure>
+
+    <div class="chart-container">
+        <canvas id="myChart"  width="500" height="250"></canvas>
+    </div>
+
+    <br>
+
+    <button type="button" class="btn btn-group-sm" onclick="rawData()">מידע נקי</button>
+    <button type="button" class="btn btn-group-sm" onclick="smoothData()">מידע חלק - סביצקי גוליי</button>
+
+    <br>
+    <br>
+    <br>
+
+    <a href="https://data.gov.il/dataset/covid-19">למאגר המידע הממשלתי</a>
+
+{% endblock %}
+
+{% block javaScript %}
+    <script>
+        function addData(chart, label, data) {
+            chart.data.labels.push(label);
+            chart.data.datasets.forEach((dataset) => {
+                dataset.data.push(data);
+            });
+            chart.update();
+            }
+
+        function removeData(chart) {
+            chart.data.labels.pop();
+            chart.data.datasets.forEach((dataset) => {
+                dataset.data.pop();
+            });
+            chart.update();
+            }
+
+        function rawData() {
+            data = {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    label: 'חולים חדשים',
+                    backgroundColor: 'rgb(82,172,231)',
+                    borderColor: 'rgb(82,172,231)',
+                    data: {{ data|safe }}
+                }]
+            };
+            chart.config.data = data;
+            chart.update();
+        }
+
+        function smoothData() {
+            data = {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    label: 'חולים חדשים',
+                    backgroundColor: 'rgb(82,172,231)',
+                    borderColor: 'rgb(82,172,231)',
+                    data: {{ savgol_smoothed_data|safe }}
+                }]
+            };
+            chart.config.data = data;
+            chart.update();
+        }
+
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'bar',
+
+            // The data for our dataset
+            data: {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    label: 'חולים חדשים',
+                    backgroundColor: 'rgb(82,172,231)',
+                    borderColor: 'rgb(82,172,231)',
+                    data: {{ data|safe }}
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                scales: {
+                  xAxes: [{
+                    type: 'time'
+                  }]
+                }
+            }
+        });
+
+
+
+    </script>
+{% endblock %}
